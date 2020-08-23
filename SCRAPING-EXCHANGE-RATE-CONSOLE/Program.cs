@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +13,8 @@ namespace SCRAPING_EXCHANGE_RATE_CONSOLE
     {
         static void Main(string[] args)
         {
-            GetHtmlAsync();
+            //GetHtmlAsync();
+            Console.WriteLine(GetClient("https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"));
             Console.ReadLine();
         }
 
@@ -81,6 +83,33 @@ namespace SCRAPING_EXCHANGE_RATE_CONSOLE
             Console.WriteLine($"To Code: {toCode}");
 
             Console.WriteLine();
+
+        }
+
+        private static string GetClient(string uri)
+        {
+            try
+            {
+
+                HttpResponseMessage HttpResponseMessage = null;
+                var GoResponse = "";
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("text/xml"));
+
+                    HttpResponseMessage = httpClient.GetAsync(uri).Result;
+
+                    GoResponse = HttpResponseMessage.Content.ReadAsStringAsync().Result;
+
+                }
+                return GoResponse;
+
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
 
         }
     }
